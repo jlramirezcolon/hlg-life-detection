@@ -50,13 +50,13 @@ molecular_descriptor_distribution.m
 
 2. **Abundance-weighted classification**
 ```matlab
-   abundance_weighted_analysis.m
+abundance_weighted_analysis.m
 ```
    Computes weighted molecular descriptor statistics, evaluates class separation metrics, and performs machine learning classification to identify the most discriminative features.
 
 3. **Bayesian framework simulations**
 ```matlab
-   simulations.m
+simulations.m
 ```
    Calculates Bayesian probabilities:
    - P(E|A): Probability of evidence given abiotic sample
@@ -65,7 +65,7 @@ molecular_descriptor_distribution.m
 
 4. **Generate simulation plots**
 ```matlab
-   simulations_plots.m
+simulations_plots.m
 ```
    Produces publication figures from Bayesian simulation results.
 
