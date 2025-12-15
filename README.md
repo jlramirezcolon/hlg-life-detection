@@ -12,13 +12,13 @@ Tested with MATLAB R2024b on OS X 13.6.5. Requires the Statistics and Machine Le
 ## Get Scripts
 ```bash
 # Clone the repository
-git clone https://github.com/jlramirezcolon/LUMOS-master.git
-cd LUMOS-master
+git clone https://github.com/jlramirezcolon/hlg-master.git
+cd hlg-master
 ```
 
 Open MATLAB and add the repository to your path:
 ```matlab
-addpath(genpath('path/to/LUMOS-master'))
+addpath(genpath('path/to/hlg-master'))
 ```
 ## Data
 **Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx**: Contains all amino acid samples and calculated molecular descriptors used in this study. 
