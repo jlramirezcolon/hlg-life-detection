@@ -1,4 +1,4 @@
-# LUMOS (Life Unveiled via Molecular Orbital Signatures)
+# Life/Nonlife Discrimination via Orbital Energy Gaps
 Code and data used to reproduce the results outlined in "Distinguishing life from non-life via molecular frontier orbital energy gaps". 
 
 # Citation
