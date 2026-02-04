@@ -5,7 +5,7 @@ Code and data used to reproduce the results outlined in "Distinguishing life fro
 Ramírez-Colón JL, Ni Z, Carr CE. Distinguishing life from non-life via molecular frontier orbital energy gaps. In preparation.
 
 # Compatibility
-Tested with MATLAB R2024b on OS X 13.6.5. Requires the Statistics and Machine Learning, the Predictive Maintenance, and the System Identification toolboxes. All third-party code is included in the `3rd_party/` folder with appropriate licenses.
+Tested with MATLAB R2024b on OS X 13.6.5 and 14.8.3. Requires the Statistics and Machine Learning, the Predictive Maintenance, and the System Identification toolboxes. All third-party code is included in the `3rd_party/` folder with appropriate licenses.
 
 # Installation
 
@@ -33,7 +33,7 @@ addpath(genpath('path/to/hlg-master'))
 - Legends: Key for all the abbreviations and colors identifications used in 'MATLAB', 'MATLAB_Distirbutions', and 'Database'.
 - References: Contains all the literature references for each of the samples within the database.
 
-**Sim-settings.xlsx**: Configuration parameters for Bayesian simulation framework. 
+**sim_settings.xlsx**: Configuration parameters for Bayesian simulation framework. 
 
 ## Usage
 
@@ -43,7 +43,6 @@ Run analyses in the following order to reproduce paper results:
 
 1. **Molecular descriptor distribution analysis**
 ```matlab
-cd code
 molecular_descriptor_distribution.m
 ```
    Analyzes the distribution of 10 molecular descriptors across biotic and abiotic environments.
@@ -65,11 +64,13 @@ simulations.m
 
 4. **Generate simulation plots**
 ```matlab
-simulations_plots.m
+simulation_plots.m
 ```
    Produces publication figures from Bayesian simulation results.
 
 ### Reproducing Paper Figures
+
+PDF versions of all figures saved from MATLAB figures can be found in /out/figures.
 
 molecular_descriptor_distribution.m:
 - Figure 1c. Box plots showing amino acid's HOMO-LUMO gap distributions by class
@@ -92,7 +93,10 @@ simulations_plots.m:
 ### Helper Functions
 - `addFeature.m`: Computes abundance-weighted statistical features from molecular properties
 - `PlotFeature.m`: Creates histogram visualizations of features
+- `PlotFeatures2d.m`: Creates 2d visualization of two features
 - `LookupProperties.m`: Retrieves property values for molecules in data table
 
 # License
-Distributed under...
+This software is distributed under the GNU Affero General Public License v3 (AGPLv3). This algorithm is a product of the Planetary eXploration Lab (PXL) at Georgia Tech. We are committed to Open Science and have released this implementation under AGPLv3 to ensure the life-detection community benefits from transparent, peer-reviewed methods.
+
+Interested in Collaboration? If you are interested in integrating this algorithm into flight hardware, proprietary software suites, or NASA mission proposals where AGPLv3 compliance may be complex, please reach out. We would love to discuss science team partnerships, validation support, or alternative licensing. Visit [pxl.earth](https://www.pxl.earth/).

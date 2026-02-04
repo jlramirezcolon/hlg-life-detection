@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Ramírez-Colón"
+    given-names: "J. L."
+    affiliation: "Planetary eXploration Lab (PXL), Georgia Institute of Technology"
+  - family-names: "Ni"
+    given-names: "Z."
+    affiliation: "Planetary eXploration Lab (PXL), Georgia Institute of Technology"
+  - family-names: "Carr"
+    given-names: "C. E."
+    affiliation: "Planetary eXploration Lab (PXL), Georgia Institute of Technology"
+title: "hlg-life-detection: Distinguishing life from non-life via molecular frontier orbital energy gaps"
+version: 1.0.0
+doi: "10.5281/zenodo.FIXME" # You can also use the 'doi' shortcut here
+date-released: 2026-02-04
+url: "https://github.com/jlramirezcolon/hlg-life-detection"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.FIXME"
+    description: "The archived version of this software."
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Ramírez-Colón"
+      given-names: "J. L."
+    - family-names: "Ni"
+      given-names: "Z."
+    - family-names: "Carr"
+      given-names: "C. E."
+  title: "Distinguishing life from non-life via molecular frontier orbital energy gaps"
+  journal: "In Preparation"
+  year: 2026

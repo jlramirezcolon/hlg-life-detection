@@ -30,9 +30,29 @@
 %               Abundance-Weighted Amino Acid Descriptors to Differentiate Biotic and
 %               Abiotic Samples
 %
+
+% Copyright (C) 2026 Planetary eXploration Lab (PXL) - Georgia Institute of Technology
+% 
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU Affero General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU Affero General Public License for more details.
+%
+% You should have received a copy of the GNU Affero General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>.
+%
+% COLLABORATION NOTICE: For flight hardware integration, NASA mission 
+% proposals, or alternative licensing, please contact PXL at 
+% https://www.pxl.earth/.
+%
 % Includes 3rd part code for calculating gini coefficient:
 % Copyright (c) 2010, Yvan Lengwiler. All rights reserved.
-%
+
 %% Subsection 1a. Preliminaries
 
 % Start fresh
@@ -42,10 +62,14 @@ clear all; close all; clc;
 addpath('./code');
 addpath('./code/3rdparty/gini');
 
+% Define output directory for figures and create it if needed
+out=fullfile('.','out','figures');
+if ~exist(out,'dir'), mkdir(out); end
+
 %% Subsection 1b. Read in Amino Acid Abundance Data
 
 % Add file path
-datafile = fullfile('.','Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx');
+datafile = fullfile('.','data','Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx');
 % Set up import options for our data file; ignore first 3 lines
 opts = detectImportOptions(datafile,'Sheet','MATLAB','NumHeaderLines',2);
 % Force input of column 6 (Pub_chem_ID) using char type
@@ -108,26 +132,6 @@ for k=1:numel(metrics)
     end
 end
 
-%% Figure 2b. Generate plots for n top features 
-
-% Histogram displaying distribution of top performing metric/molecular
-% descriptor as determined by relative entropy 
-% The current setup will yield plots in Figure 2b.
-% To visualize results from any other class separation method modify
-% "sorted_indices_re" by the respective variable for the method.
-
-% Loop for visualization of many features at once
-%N_top = 1; % Modify depending on number of top features wanting to be visualized
-%top_features = varnames(sorted_indices_re(1:N_top)); 
-%for k=1:N_top
-    % Plot the feature
-    %PlotFeature(F,top_features{k}, 40);
-%end
-
-PlotFeature(F,varnames{sorted_indices_re(1)}, 40); % HLG wvar
-PlotFeature(F,varnames{sorted_indices_re(3)}, 40); % HLG gini
-PlotFeature(F,varnames{sorted_indices_re(7)}, 40); % HLG wmean
-
 %% Subsection 3a. Calculate relative entropy
 
 % Initialize relative entropy values
@@ -142,6 +146,40 @@ end
 % Rank features by relative entropy in descending order
 [sorted_rel_entropy, sorted_indices_re] = sort(relative_entropy, 'descend');
 sorted_values = sorted_rel_entropy / log(2);  % Convert to bits
+
+%% Figure 2b. Generate plots for n top features 
+
+% Histogram displaying distribution of top performing metric/molecular
+% descriptor as determined by relative entropy 
+% The current setup will yield plots in Figure 2b.
+% To visualize results from any other class separation method modify
+% "sorted_indices_re" by the respective variable for the method.
+
+varnames = F.Properties.VariableNames(5:width(F));
+
+% Loop for visualization of many features at once
+%N_top = 1; % Modify depending on number of top features wanting to be visualized
+%top_features = varnames(sorted_indices_re(1:N_top)); 
+%for k=1:N_top
+    % Plot the feature
+    %PlotFeature(F,top_features{k}, 40);
+%end
+
+f2b1 = PlotFeature(F,varnames{sorted_indices_re(3)}, 40); % HLG gini
+f2b2 = PlotFeature(F,varnames{sorted_indices_re(7)}, 40); % HLG wmean
+f2b3 = PlotFeature(F,varnames{sorted_indices_re(1)}, 40); % HLG wvar
+
+% Export Figure 2b
+set(f2b1, 'Renderer', 'painters');
+fn = fullfile(out,'Fig2b.gini.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+set(f2b2, 'Renderer', 'painters');
+fn = fullfile(out,'Fig2b.wmean.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+set(f2b3, 'Renderer', 'painters');
+fn = fullfile(out,'Fig2b.wvar.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
 
 %% Figure 3a. Relative entropy rank of all features
 
@@ -219,12 +257,22 @@ set(legend_h, 'Visible', 'off');
 legend(legend_h, {'Weighted variance', 'Weighted mean', 'Gini coefficient'}, ...
        'Location', 'southeast', 'FontSize', 14);
 
+% Export Figure 3a
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'Fig3a.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
 %% Figure 3b. Two-dimensional scatter plot of weighted variance for HLG (MNDO method) versus MAI
 
 % Yields a 2D scatter plot of any two distributions of results from table F
 f1 = 'HLG_MNDO_H2O_eV_wvar'; % 1st molecular descriptor for a specific metric
 f2 = 'MA_index_wvar';        % 2nd molecular descriptor for a specific metric
 PlotFeatures2d(F,f1,f2);
+
+% Export Figure 3a
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'Fig3b.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 %% Subsection 3b. Calculate AUC of each feature
 
@@ -245,7 +293,6 @@ for i = 5:width(F)
         relationship(i-4) = -1;
     end
 end
-
 
 % Rank using relative entropy
 [sorted_auc,sorted_indices_auc]=sort(auc,'descend');
@@ -316,6 +363,12 @@ ylim([0 1])
 
 hold off
 
+% Export Figure 3c
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'Fig3c.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
+
 %% Figure S3b. Area Under the Receiver Operating Characteristic Curve rank of all features
 
 figure('Color', [1 1 1],'Position', [200 100 600 700]);
@@ -384,6 +437,11 @@ legend_h(3) = patch([0 0 0 0], [0 0 0 0], gini_color, 'FaceAlpha', 0.7);
 set(legend_h, 'Visible', 'off'); 
 legend(legend_h, {'Weighted variance', 'Weighted mean', 'Gini coefficient'}, ...
        'Location', 'southeast', 'FontSize', 14);
+
+% Export Figure S3b
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'FigS3b.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 %% Subsection 3c. Rank the features using Chi2
 % https://www.mathworks.com/help/stats/fscmrmr.html
@@ -464,6 +522,11 @@ set(legend_h, 'Visible', 'off');
 legend(legend_h, {'Weighted variance', 'Weighted mean', 'Gini coefficient'}, ...
        'Location', 'southeast', 'FontSize', 14);
 
+% Export Figure S3c
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'FigS3c.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
 %% Subsection 3d. Rank the features using the minimum redundancy maximum relevance (MRMR) algorithm
 % https://www.mathworks.com/help/stats/fscmrmr.html
 
@@ -539,6 +602,11 @@ set(legend_h, 'Visible', 'off');
 legend(legend_h, {'Weighted variance', 'Weighted mean', 'Gini coefficient'}, ...
        'Location', 'southeast', 'FontSize', 14);
 
+% Export Figure S3d
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'FigS3d.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
 %% Figure S3a. Class separation methods ranking heatmap 
 
 % Rank relative entropy
@@ -592,6 +660,11 @@ h.ColorbarVisible = 'on';
 % Set font size
 set(gca, 'FontSize', 16);
 
+% Export Figure S3a
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'FigS3a.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
 %% Figure S1a. Total concentration of amino acids (nmol/g) per sample across biotic and abiotic classes
 
 % Apply colors
@@ -610,6 +683,11 @@ xlabel('Concentration log_{10} (nmol/g)');
 ylabel('# Samples');
 legend('Abiotic','Biotic','Location','northwest');
 set(gca, 'FontSize', 16);
+
+% Export Figure S1a
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'FigS1a.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 %% Figure S1b. Scatter plot of AA richness versus total abundances
 
@@ -649,6 +727,11 @@ legend('Abiotic', 'Biotic', 'FontSize', 16);
 % Add more transparent grid
 grid on;
 set(gca, 'GridAlpha', 0.15); % Make grid more transparent
+
+% Export Figure S1b
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'FigS1b.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 %% Figure S2. Heatmaps of AA abundances across abiotic and biotic subcategories
 
@@ -721,6 +804,11 @@ title('Abiotic');
 
 colormap(turbo);
 
+% Export Figure S2
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'FigS2.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
 %% Subsection 4. Machine Learning Classification
 
 % Define predictors and response
@@ -728,7 +816,6 @@ labels = F.Class;
 %selectedPredictors = 5:width(F); % All predictors
 selectedPredictors = {'HLG_MNDO_H2O_eV_wvar'}; 
 features = F{:, selectedPredictors};
-
 
 % Define models
 models = {'Fine Tree', 'Medium Tree', 'Coarse Tree', 'Quadratic Discriminant', 'Binary GLM Logistic Regression'};
@@ -844,7 +931,10 @@ for modelIdx = 1:length(models)
     
     % Save all models for this type
     modelName = strrep(modelType, ' ', '_');
-    save([modelName '_models.mat'], 'savedModels');
+    out_path = fullfile('.','out','ml');
+    if ~exist(out_path,'dir'), mkdir(out_path); end
+    out_fn = fullfile(out_path,[modelName '_models.mat']);
+    save(out_fn, 'savedModels');
     
     % Store results
     results.(modelName) = metrics;
@@ -852,7 +942,8 @@ for modelIdx = 1:length(models)
 end
 
 % Save the overall results
-save('holdout_results.mat', 'results', 'F', 'features', 'labels');
+overall_fn = fullfile('.','out','ml','holdout_results.mat');
+save(overall_fn, 'results', 'F', 'features', 'labels');
 
 % Helper functions
 function model = trainModel(features, labels, modelType)
@@ -1043,7 +1134,8 @@ for i = 1:length(modelNames)
 end
 
 % Export detailed results
-writetable(allData, 'MLM_All_results.xlsx', 'Sheet', 'Results');
+MLM_All_fn = fullfile('.','out','ml','MLM_All_results.xlsx');
+writetable(allData, MLM_All_fn, 'Sheet', 'Results');
 
 % Create summary table
 summaryData = table();
@@ -1066,5 +1158,4 @@ for i = 1:length(modelNames)
 end
 
 % Export summary
-writetable(summaryData, 'MLM_All_results.xlsx', 'Sheet', 'Summary');
-
+writetable(summaryData, MLM_All_fn, 'Sheet', 'Summary');
