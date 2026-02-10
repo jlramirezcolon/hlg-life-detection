@@ -30,13 +30,39 @@
 %    Figure 1e. Statistical significance matrix showing pairwise comparisons between categories
 %
 
+% Copyright (C) 2026 Planetary eXploration Lab (PXL) - Georgia Institute of Technology
+% 
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU Affero General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU Affero General Public License for more details.
+%
+% You should have received a copy of the GNU Affero General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>.
+%
+% COLLABORATION NOTICE: For flight hardware integration, NASA mission 
+% proposals, or alternative licensing, please contact PXL at 
+% https://www.pxl.earth/.
+
 %% 1. Organizing Database Data
 
 % Start fresh
 clear all; close all; clc;
 
+% Define database excel file
+db=fullfile('.','data','Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx');
+
+% Define output directory for figures and create it if needed
+out=fullfile('.','out','figures');
+if ~exist(out,'dir'), mkdir(out); end
+
 % Importing data from Excel file
-[num_data, txt_data, raw_data] = xlsread('Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx', 'MATLAB_Distributions');
+[num_data, txt_data, raw_data] = xlsread(db, 'MATLAB_Distributions');
     
 % Getting dimensions of the data
 [rows, cols] = size(raw_data);
@@ -93,7 +119,7 @@ metadata.detection_summary = detection_summary;
 %% 2. Organizing Properties Data
 
 % Import data from Properties sheet
-[num_data, txt_data, raw_data] = xlsread('Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx', 'Properties_Distributions');
+[num_data, txt_data, raw_data] = xlsread(db, 'Properties_Distributions');
     
 % Extract property names (first column, skipping header)
 property_names = raw_data(2:end, 1);
@@ -152,6 +178,10 @@ color_map('Interstellar Clouds') = [0.4, 0.7, 1.0]; % Maya blue
 color_map('Lunar') = [0.8, 0.4, 0.0];               % Dark orange
 color_map('Asteroid') = [0.9, 0.5, 0.1];            % Tiger orange
 color_map('Meteorite') = [1.0, 0.6, 0.2];           % Saffron
+
+% Overall abiotic and biotic
+color_map('Abiotic') = hex2rgb('#e9963e');          % Orange
+color_map('Biotic') = hex2rgb('#b2d49a');           % Green
 
 % Get detection matrix and categorical data
 detection_matrix = detection_data;
@@ -311,7 +341,8 @@ end
 % Set up plot appearance
 yticks(1:length(abiotic_categories));
 yticklabels(abiotic_categories);
-xlabel(property_name, 'FontSize', 20);
+label = [strrep(property_name,'_',' ') ' (eV)'];
+xlabel(label, 'FontSize', 20);
 xlim([8.5, 11.5]);
 grid on;
 set(gca, 'GridLineStyle', ':');
@@ -319,8 +350,13 @@ set(gca, 'GridAlpha', 0.3);
 set(gca, 'FontSize', 18);
 set(gca, 'Box', 'on');
 
+% Export Figure 1c
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'Fig1c.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
 % Add overall title
-sgtitle(['Distribution of ', property_name, ' by Sample Category'], 'FontSize', 24);
+sgtitle(['Distribution of ', label, ' by Sample Category'], 'FontSize', 24);
 
 %% 4. Calculate statistics for each variable by class
 
@@ -411,16 +447,23 @@ end
 [sorted_values_nats, sort_idx] = sort(rel_entropy_values);
 sorted_values = sorted_values_nats / log(2);  % Convert to bits
 sorted_variables = variables(sort_idx);
+% make variables safe for display (avoid TeX subscripts)
+sorted_variables_labels = strrep(sorted_variables,"_"," ")
 
 % Create an horizontal bar plot
 h = barh(sorted_values);
 set(h, 'FaceColor', [244/255, 194/255, 69/255]);
 yticks(1:length(variables))
 xlim([1e-3 2.3])
-yticklabels(sorted_variables)
+yticklabels(sorted_variables_labels)
 xlabel("Relative entropy (bits)")
 ylabel("Molecular descriptor")
 set(gca, 'Xscale','log', 'FontSize', 18)
+
+% Export Figure 1d
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'Fig1d.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 %% 6. Statistical Significance Matrix (Yields Figure 1e.)
 
@@ -522,6 +565,11 @@ set(gca, 'GridColor', [0.9, 0.9, 0.9], 'GridAlpha', 0.5);
 axis square;
 box on;
 
+% Export Figure 1e
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'Fig1e.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
+
 %% 7. Extended histogram analysis for all molecular descriptors
 
 % Create comprehensive histogram comparison for all descriptors
@@ -545,9 +593,9 @@ for v = 1:length(variables)
         
     % Create overlaid histograms with fixed bin edges
     histogram(biotic_vals, 'BinEdges', bin_edges, ...
-        'FaceColor', colors(2,:), 'FaceAlpha', 0.6, 'EdgeColor', 'none');
+        'FaceColor', color_map('Biotic'), 'FaceAlpha', 0.6, 'EdgeColor', 'none');
     histogram(abiotic_vals, 'BinEdges', bin_edges, ...
-       'FaceColor', colors(1,:), 'FaceAlpha', 0.6, 'EdgeColor', 'none');
+       'FaceColor', color_map('Abiotic'), 'FaceAlpha', 0.6, 'EdgeColor', 'none');
     
     xlabel(strrep(var_name, '_', ' '), 'FontSize', 10);
     ylabel('Probability', 'FontSize', 10);
@@ -562,6 +610,11 @@ for v = 1:length(variables)
     set(gca, 'GridAlpha', 0.3);
     set(gca, 'FontSize', 18);
 end
+
+% Export Figure (Extra)
+set(gcf, 'Renderer', 'painters');
+fn = fullfile(out,'Fig_Extra_Molecular_Descriptor_Histograms.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 sgtitle('Distribution Comparison: Biotic vs Combined Abiotic', 'FontSize', 16);
 

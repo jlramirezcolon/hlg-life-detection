@@ -25,6 +25,26 @@
 %    posterior probability P(B|E).
 % 6. Saves results.
 %
+
+% Copyright (C) 2026 Planetary eXploration Lab (PXL) - Georgia Institute of Technology
+% 
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU Affero General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU Affero General Public License for more details.
+%
+% You should have received a copy of the GNU Affero General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>.
+%
+% COLLABORATION NOTICE: For flight hardware integration, NASA mission 
+% proposals, or alternative licensing, please contact PXL at 
+% https://www.pxl.earth/.
+%
 % Includes 3rd part code for calculating gini coefficient:
 % Copyright (c) 2010, Yvan Lengwiler. All rights reserved.
 
@@ -35,10 +55,13 @@ clear all; close all; clc;
 addpath('./code');
 addpath('./code/3rdparty/gini');
 
-% Run wvar simulation
-s = readsettings('sim_settings.xlsx','wvar'); simulate(s);
-s = readsettings('sim_settings.xlsx','wmean'); simulate(s);
-s = readsettings('sim_settings.xlsx','gini'); simulate(s);
+% Settings
+fn_settings = fullfile('.','settings','sim_settings.xlsx');
+
+% Run simulations
+s = readsettings(fn_settings,'wvar'); simulate(s);
+s = readsettings(fn_settings,'wmean'); simulate(s);
+s = readsettings(fn_settings,'gini'); simulate(s);
 
 %% Simulate 
 function simulate(op)
@@ -60,7 +83,7 @@ function simulate(op)
     %% Derived values 
 
     subfolder = sprintf('%d_%s_%s',op.N_reps,op.aa_sel,op.aa_abm);
-    folder = sprintf('./figures-manuscript/%s/%s/%s',op.field,op.metric,subfolder);
+    folder = fullfile('.','out','simulations',op.field,op.metric,subfolder);
     N_N_AA = numel(op.N_AA);       % Number of different AA counts to test
     N_bins = numel(op.metric_edges)-1;    % Number of bins for probability distributions
 

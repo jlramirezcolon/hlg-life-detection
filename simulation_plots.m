@@ -17,13 +17,33 @@
 %    Figure S6. Effect of prior on evidence distribution and posterior 
 %               confidence in biogenicity
 %
+
+% Copyright (C) 2026 Planetary eXploration Lab (PXL) - Georgia Institute of Technology
+% 
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU Affero General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU Affero General Public License for more details.
+%
+% You should have received a copy of the GNU Affero General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>.
+%
+% COLLABORATION NOTICE: For flight hardware integration, NASA mission 
+% proposals, or alternative licensing, please contact PXL at 
+% https://www.pxl.earth/.
+
 %% Setup 
 
 clear all; close all; clc;
 
 % Plotting options
 fs = 12;                    % Font size
-out = './figures-manuscript/figures/1M';      % output folder
+out = fullfile('.','out','figures');      % output folder
 
 letter_width = 8.5;         % Figure export width in inches
 letter_height = 11.0;       % Figure export height in inches
@@ -31,9 +51,14 @@ contenttype = 'vector';     % Slow but high quality
 contenttype = 'image';      % Fast but low quality
 yscalelog = false;          % Change y-scale to log
 
-files = {'./figures-manuscript/HLG_MNDO_H2O_eV/gini/1000000_class_freq_uniform/sim.mat',...
-        './figures-manuscript/HLG_MNDO_H2O_eV/wmean/1000000_class_freq_uniform/sim.mat',...
-        './figures-manuscript/HLG_MNDO_H2O_eV/wvar/1000000_class_freq_uniform/sim.mat'};
+% Sources for plots
+base_dir = fullfile('.', 'out', 'simulations', 'HLG_MNDO_H2O_eV');
+suffix_dir = fullfile('1000000_class_freq_uniform', 'sim.mat');
+
+% Construct the cell array
+files = {fullfile(base_dir, 'gini', suffix_dir), ...
+         fullfile(base_dir, 'wmean', suffix_dir), ...
+         fullfile(base_dir, 'wvar', suffix_dir)};
 
 %% Configuration
 if ~exist(out,'dir'), mkdir(out); end;
@@ -90,13 +115,14 @@ for row=1:3
 end
 
 % save
-fn = fullfile(out,'P_of_E_across_metrics.pdf');
+fn = fullfile(out,'FigS4_P_of_E_across_metrics_raster.pdf');
 hFig = gcf; set(hFig, 'Units', 'inches'); set(hFig, 'OuterPosition', [0 0 letter_width letter_height]);
 exportgraphics(gcf,fn,'contenttype',contenttype);
 
 % save pdf
 set(gcf, 'Renderer', 'painters');
-exportgraphics(gcf, 'P_of_E_across_metrics.pdf', 'ContentType', 'vector');
+fn = fullfile(out,'FigS4_P_of_E_across_metrics_vector.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 %% Figure S5: Confidence of biogenicity at prior of 0.5 across metrics
 % Left column: P(E) for P(B)=0.5, Right Column: P(B|E) for P(B)=0.5
@@ -158,13 +184,14 @@ for row=1:3
 end
 
 % save
-fn = fullfile(out,'Equal_priors_across_metrics.pdf');
+fn = fullfile(out,'FigS5_Equal_priors_across_metrics_raster.pdf');
 hFig = gcf; set(hFig, 'Units', 'inches'); set(hFig, 'OuterPosition', [0 0 letter_width letter_height]);
 exportgraphics(gcf,fn,'contenttype',contenttype);
 
 % save pdf
 set(gcf, 'Renderer', 'painters');
-exportgraphics(gcf, 'Equal_priors_across_metrics.pdf', 'ContentType', 'vector');
+fn = fullfile(out,'FigS5_Equal_priors_across_metrics_vector.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 %% Figure S6: Effect of prior
 
@@ -237,13 +264,14 @@ for row=1:3
 end
 
 % save
-fn = fullfile(out,'Effect_of_prior.pdf');
+fn = fullfile(out,'FigS6_Effect_of_prior_raster.pdf');
 hFig = gcf; set(hFig, 'Units', 'inches'); set(hFig, 'OuterPosition', [0 0 letter_width letter_height]);
 exportgraphics(gcf,fn,'contenttype',contenttype);
 
 % save pdf
 set(gcf, 'Renderer', 'painters');
-exportgraphics(gcf, 'Effect_of_prior.pdf', 'ContentType', 'vector');
+fn = fullfile(out,'FigS6_Effect_of_prior_vector.pdf');
+exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 %% Figure 4b: Posterior P(B|E) individual plots
 % P(B|E) for given P(B), with P(B) = 0.1, 0.01, 0.001
@@ -284,7 +312,7 @@ for row=length(P_of_B)
     end
 
     % save
-    fn = fullfile(out,sprintf('Posterior_for_prior_of_P_of_B_%0.3f.pdf',P_of_B(row)));
+    fn = fullfile(out,sprintf('Fig4b_Posterior_for_prior_of_P_of_B_%0.3f.pdf',P_of_B(row)));
     hFig = gcf; set(hFig, 'Units', 'inches'); set(hFig, 'OuterPosition', [0 0 4 4]);
     exportgraphics(gcf,fn,'contenttype',contenttype);
 end
