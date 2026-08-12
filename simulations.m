@@ -56,7 +56,7 @@ addpath('./code');
 addpath('./code/3rdparty/gini');
 
 % Settings
-fn_settings = fullfile('.','settings','sim_settings.xlsx');
+fn_settings = fullfile('.','settings','sim_settings_2026-08-11.xlsx');
 
 % Run simulations
 s = readsettings(fn_settings,'wvar'); simulate(s);

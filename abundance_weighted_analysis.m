@@ -69,7 +69,7 @@ if ~exist(out,'dir'), mkdir(out); end
 %% Subsection 1b. Read in Amino Acid Abundance Data
 
 % Add file path
-datafile = fullfile('.','data','Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx');
+datafile = fullfile('.','Amino.Acid.Database.Release.2026-07-20.xlsx');
 % Set up import options for our data file; ignore first 3 lines
 opts = detectImportOptions(datafile,'Sheet','MATLAB','NumHeaderLines',2);
 % Force input of column 6 (Pub_chem_ID) using char type
@@ -165,9 +165,9 @@ varnames = F.Properties.VariableNames(5:width(F));
     %PlotFeature(F,top_features{k}, 40);
 %end
 
-f2b1 = PlotFeature(F,varnames{sorted_indices_re(3)}, 40); % HLG gini
-f2b2 = PlotFeature(F,varnames{sorted_indices_re(7)}, 40); % HLG wmean
-f2b3 = PlotFeature(F,varnames{sorted_indices_re(1)}, 40); % HLG wvar
+f2b1 = PlotFeature(F,varnames{sorted_indices_re(3)}, 40); % HLG (MNDO) gini
+f2b2 = PlotFeature(F,varnames{sorted_indices_re(6)}, 40); % HLG (MNDO) wmean
+f2b3 = PlotFeature(F,varnames{sorted_indices_re(1)}, 40); % HLG (MNDO) wvar
 
 % Export Figure 2b
 set(f2b1, 'Renderer', 'painters');
@@ -246,7 +246,7 @@ set(gca, 'yticklabels', rev_labels);
 
 % Set log scale and font size
 set(gca, 'xscale', 'log', 'FontSize', 16);
-xlim([1e-1 1e5]);
+xlim([1e-1 1e4]);
 
 % Create a custom legend
 legend_h = zeros(3,1);
@@ -265,7 +265,7 @@ exportgraphics(gcf, fn, 'ContentType', 'vector');
 %% Figure 3b. Two-dimensional scatter plot of weighted variance for HLG (MNDO method) versus MAI
 
 % Yields a 2D scatter plot of any two distributions of results from table F
-f1 = 'HLG_MNDO_H2O_eV_wvar'; % 1st molecular descriptor for a specific metric
+f1 = 'HLG_MNDO_pH_7_eV_wvar'; % 1st molecular descriptor for a specific metric
 f2 = 'MA_index_wvar';        % 2nd molecular descriptor for a specific metric
 PlotFeatures2d(F,f1,f2);
 
@@ -312,7 +312,7 @@ perfect_color = [205/255, 223/255, 236/255]; % Pastel blue
 random_color = [0, 0, 0];                    % Black
 
 % Plot HOMO-LUMO Gap (AUC = 0.968)
-field1 = 'HLG_MNDO_H2O_eV_wvar';
+field1 = 'HLG_wB97XD_TZVP_pH_7_eV_wvar';
 [x1,y1,t1,auc1,optrocpt1,suby1] = perfcurve(Class,F.(field1),1);
 plot(x1,y1,'--','LineWidth',2,'Color',hlg_color,'DisplayName', 'HOMO-LUMO Gap')
 
@@ -1159,3 +1159,15 @@ end
 
 % Export summary
 writetable(summaryData, MLM_All_fn, 'Sheet', 'Summary');
+
+%% Helper Function
+
+function z = relativeEntropy(x, labels)
+    % Replicates Predictive Maintenance Toolbox's relativeEntropy
+    % Assumes Gaussian-distributed data; labels is logical
+    x1 = x(labels);
+    x2 = x(~labels);
+    m1 = mean(x1); v1 = var(x1);
+    m2 = mean(x2); v2 = var(x2);
+    z = 0.5*((v2/v1)+(v1/v2)-2) + 0.5*(v1+v2)*((m1-m2)^2)/(v1*v2);
+end

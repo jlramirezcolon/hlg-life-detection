@@ -54,15 +54,12 @@
 % Start fresh
 clear all; close all; clc;
 
-% Define database excel file
-db=fullfile('.','data','Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx');
-
 % Define output directory for figures and create it if needed
 out=fullfile('.','out','figures');
 if ~exist(out,'dir'), mkdir(out); end
 
 % Importing data from Excel file
-[num_data, txt_data, raw_data] = xlsread(db, 'MATLAB_Distributions');
+[num_data, txt_data, raw_data] = xlsread('Amino.Acid.Database.Release.2026-07-20.xlsx', 'MATLAB_Distributions');
     
 % Getting dimensions of the data
 [rows, cols] = size(raw_data);
@@ -74,7 +71,7 @@ subcategories = raw_data(2:end, 3);   % Column 3: Subcategory
 conditions = raw_data(2:end, 4);      % Column 4: Experimental conditions  
 
 % Getting amino acid names 
-amino_acid_names = raw_data(1, 5:125);
+amino_acid_names = raw_data(1, 5:124);
     
 % Extracting amino acid detection data 
 detection_data = num_data;
@@ -119,7 +116,7 @@ metadata.detection_summary = detection_summary;
 %% 2. Organizing Properties Data
 
 % Import data from Properties sheet
-[num_data, txt_data, raw_data] = xlsread(db, 'Properties_Distributions');
+[num_data, txt_data, raw_data] = xlsread('Amino.Acid.Database.Release.2026-07-20.xlsx', 'Properties Distributions');
     
 % Extract property names (first column, skipping header)
 property_names = raw_data(2:end, 1);
@@ -189,7 +186,7 @@ id = metadata.id;
 categories = metadata.categories;
 
 % Select property to plot
-property_name = 'HOMO_LUMO_Gap'; % Modify depending on descriptor of interest  
+property_name = 'HLG_wB97XD_TZVP_pH_7_eV'; % Modify depending on descriptor of interest  
 property_idx = find(strcmp(properties_data.property_names, property_name));
 if isempty(property_idx)
     error('Property name not found in properties data');
@@ -274,7 +271,7 @@ end
 yticks(1:length(biotic_categories));
 yticklabels(biotic_categories);
 set(gca, 'XTickLabel', []);
-xlim([8.5, 11.5]);
+xlim([9, 13]);
 grid on;
 set(gca, 'GridLineStyle', ':');
 set(gca, 'GridAlpha', 0.3);
@@ -308,7 +305,7 @@ end
 yticks(1:length(abiotic_sim_categories));
 yticklabels(abiotic_sim_categories);
 set(gca, 'XTickLabel', []);
-xlim([8.5, 11.5]);
+xlim([9, 13]);
 grid on;
 set(gca, 'GridLineStyle', ':');
 set(gca, 'GridAlpha', 0.3);
@@ -343,7 +340,7 @@ yticks(1:length(abiotic_categories));
 yticklabels(abiotic_categories);
 label = [strrep(property_name,'_',' ') ' (eV)'];
 xlabel(label, 'FontSize', 20);
-xlim([8.5, 11.5]);
+xlim([9, 13]);
 grid on;
 set(gca, 'GridLineStyle', ':');
 set(gca, 'GridAlpha', 0.3);
@@ -370,7 +367,7 @@ biotic_idx = find(P.Biotic == 1);                      % Biotic
 combined_abiotic_idx = unique([abiotic_d_idx; abiotic_s_idx]); % Abiotic + Abiotic (Simulated)
 
 % Variables to analyze
-variables = {'HOMO_LUMO_Gap', 'Molar_mass', 'MA_index', 'Carbon_number', 'Heat_Formation_kJ_mol', 'Gibbs_Energy_kJ_mol', 'LogP','LogS','TopoPSA','Dipole_moment'};
+variables = {'HLG_wB97XD_TZVP_pH_7_eV', 'Molar_mass', 'MA_index', 'Carbon_number', 'Heat_Formation_kJ_mol', 'Gibbs_Energy_kJ_mol', 'LogP','LogS','TopoPSA_A2','Dipole_moment_Debye'};
 class = {'Abiotic_D', 'Abiotic_S', 'Biotic', 'Combined_Abiotic'};
 indices = {abiotic_d_idx, abiotic_s_idx, biotic_idx, combined_abiotic_idx};
 
@@ -636,3 +633,15 @@ end
 
 % Display the table
 disp(summary_table);
+
+%% Helper Function
+
+function z = relativeEntropy(x, labels)
+    % Replicates Predictive Maintenance Toolbox's relativeEntropy
+    % Assumes Gaussian-distributed data; labels is logical
+    x1 = x(labels);
+    x2 = x(~labels);
+    m1 = mean(x1); v1 = var(x1);
+    m2 = mean(x2); v2 = var(x2);
+    z = 0.5*((v2/v1)+(v1/v2)-2) + 0.5*(v1+v2)*((m1-m2)^2)/(v1*v2);
+end
