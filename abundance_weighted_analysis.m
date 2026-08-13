@@ -69,7 +69,7 @@ if ~exist(out,'dir'), mkdir(out); end
 %% Subsection 1b. Read in Amino Acid Abundance Data
 
 % Add file path
-datafile = fullfile('.','Amino.Acid.Database.Release.2026-07-20.xlsx');
+datafile = fullfile('.','data','Amino.Acid.Database.Release.2026-07-20.xlsx');
 % Set up import options for our data file; ignore first 3 lines
 opts = detectImportOptions(datafile,'Sheet','MATLAB','NumHeaderLines',2);
 % Force input of column 6 (Pub_chem_ID) using char type
