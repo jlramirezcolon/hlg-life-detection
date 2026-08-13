@@ -54,12 +54,15 @@
 % Start fresh
 clear all; close all; clc;
 
+% Define database excel file
+db=fullfile('.','data','Amino.Acid.Database.Release.2026-07-20.xlsx');
+
 % Define output directory for figures and create it if needed
 out=fullfile('.','out','figures');
 if ~exist(out,'dir'), mkdir(out); end
 
 % Importing data from Excel file
-[num_data, txt_data, raw_data] = xlsread('Amino.Acid.Database.Release.2026-07-20.xlsx', 'MATLAB_Distributions');
+[num_data, txt_data, raw_data] = xlsread(db, 'MATLAB_Distributions');
     
 % Getting dimensions of the data
 [rows, cols] = size(raw_data);
@@ -116,7 +119,7 @@ metadata.detection_summary = detection_summary;
 %% 2. Organizing Properties Data
 
 % Import data from Properties sheet
-[num_data, txt_data, raw_data] = xlsread('Amino.Acid.Database.Release.2026-07-20.xlsx', 'Properties Distributions');
+[num_data, txt_data, raw_data] = xlsread(db, 'Properties Distributions');
     
 % Extract property names (first column, skipping header)
 property_names = raw_data(2:end, 1);
