@@ -814,7 +814,7 @@ exportgraphics(gcf, fn, 'ContentType', 'vector');
 % Define predictors and response
 labels = F.Class;
 %selectedPredictors = 5:width(F); % All predictors
-selectedPredictors = {'HLG_MNDO_H2O_eV_wvar'}; 
+selectedPredictors = {'HLG_MNDO_pH_7_eV_wvar'}; 
 features = F{:, selectedPredictors};
 
 % Define models
