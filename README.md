@@ -21,19 +21,18 @@ Open MATLAB and add the repository to your path:
 addpath(genpath('path/to/hlg-master'))
 ```
 ## Data
-**Amino.Acid.Database.v1.3.Release.2025-07-19.xlsx**: Contains all amino acid samples and calculated molecular descriptors used in this study. 
+**Amino.Acid.Database.Release.2026-07-20.xlsx**: Contains all amino acid samples and calculated molecular descriptors used in this study. 
 - MATLAB: Version of 'Database' that is MATLAB compatible and used for the abundance-weighted analysis (abundance_weighted_analysis.m).
 - MATLAB_Distributions: Database used for the unweighted analysis (molecular_descriptor_distribution.m).
 - Database: Shows all amino acids profiles (columns) compiled from the literature. Samples are color-coded: pink (abiotic), orange (biotic), and blue (abiotic simulations).
 - Properties: Molecular properties calculated for all identified amino acids in 'Database'.
-- Properties_Distributions: Version of 'Properties' compatible with the script in molecular_descriptor_distribution.m.
-- Extraterrestrial_Samples_Info: Contains information relevant to each extraterrestrial sample (e.g., ID, category, classification,	amount extracted (g), analytical method, etc.). 
-- Terrestrial_Samples_Info: Contains information relevant to each terrestrial sample (e.g., category, location,	amount extracted (g), analytical method, etc.). 
-- Abiotic_Simulations: Contains information relevant to each simulated sample (e.g., conditions). 
+- Properties Distributions: Version of 'Properties' compatible with the script in molecular_descriptor_distribution.m.
+- Extraterrestrial Samples Info: Contains information relevant to each extraterrestrial sample (e.g., ID, category, classification,	amount extracted (g), analytical method, etc.). 
+- Terrestrial Samples Info: Contains information relevant to each terrestrial sample (e.g., category, location,  amount extracted (g), analytical method, etc.). 
 - Legends: Key for all the abbreviations and colors identifications used in 'MATLAB', 'MATLAB_Distirbutions', and 'Database'.
 - References: Contains all the literature references for each of the samples within the database.
 
-**sim_settings.xlsx**: Configuration parameters for Bayesian simulation framework. 
+**sim_settings_2026-08-11.xlsx**: Configuration parameters for Bayesian simulation framework. 
 
 ## Usage
 
@@ -43,19 +42,19 @@ Run analyses in the following order to reproduce paper results:
 
 1. **Molecular descriptor distribution analysis**
 ```matlab
-molecular_descriptor_distribution.m
+molecular_descriptor_distribution
 ```
    Analyzes the distribution of 10 molecular descriptors across biotic and abiotic environments.
 
 2. **Abundance-weighted classification**
 ```matlab
-abundance_weighted_analysis.m
+abundance_weighted_analysis
 ```
    Computes weighted molecular descriptor statistics, evaluates class separation metrics, and performs machine learning classification to identify the most discriminative features.
 
 3. **Bayesian framework simulations**
 ```matlab
-simulations.m
+simulations
 ```
    Calculates Bayesian probabilities:
    - P(E|A): Probability of evidence given abiotic sample
@@ -64,7 +63,7 @@ simulations.m
 
 4. **Generate simulation plots**
 ```matlab
-simulation_plots.m
+simulation_plots
 ```
    Produces publication figures from Bayesian simulation results.
 
