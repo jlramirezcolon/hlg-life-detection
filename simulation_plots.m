@@ -52,7 +52,7 @@ contenttype = 'image';      % Fast but low quality
 yscalelog = false;          % Change y-scale to log
 
 % Sources for plots
-base_dir = fullfile('.', 'out', 'simulations', 'HLG_MNDO_H2O_eV');
+base_dir = fullfile('.', 'out', 'simulations', 'HLG_MNDO_pH_7_eV');
 suffix_dir = fullfile('1000000_class_freq_uniform', 'sim.mat');
 
 % Construct the cell array
