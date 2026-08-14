@@ -182,7 +182,7 @@ for k = 1:numel(suffixes)
     fig = PlotFeature(F, varnames{varname_idx}, 40);
     set(fig, 'Renderer', 'painters');
     fn = fullfile(out, sprintf('Fig2b.%s.pdf', suffixes{k}));
-    exportgraphics(gcf, fn, 'ContentType', 'vector');
+    exportgraphics(fig, fn, 'ContentType', 'vector');
 end
 
 %% Figure 3a. Relative entropy rank of all features
