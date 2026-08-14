@@ -109,6 +109,12 @@ function simulate(op)
     % Determine number of amino acids from which we can sample
     N_available_AA = height(Pf);
     
+    if max(op.N_AA) > N_available_AA
+        error('simulations:poolExceeded', ...
+        'Requested N_AA (%d) exceeds available abiotic pool size (%d) for selection scheme ''%s''.', ...
+        max(op.N_AA), N_available_AA, op.aa_sel);
+    end
+
     % perform computation for each # of AAs
     for i_AA=1:N_N_AA
         % Get number of amino acids for this computation
@@ -210,12 +216,6 @@ function simulate(op)
     
     % Determine number of amino acids from which we can sample
     N_available_AA = height(Pf);
-
-    if max(op.N_AA) > N_available_AA
-    error('simulations:poolExceeded', ...
-        'Requested N_AA (%d) exceeds available abiotic pool size (%d) for selection scheme ''%s''.', ...
-        max(op.N_AA), N_available_AA, op.aa_sel);
-    end
     
     % perform computation for each # of AAs
     for i_AA=1:N_N_AA
