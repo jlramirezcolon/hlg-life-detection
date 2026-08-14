@@ -82,7 +82,7 @@ function simulate(op)
 
     %% Derived values 
 
-    subfolder = sprintf('%d_%s_%s',op.N_reps,op.aa_sel,op.aa_abm);
+    subfolder = sprintf('%d_%s_%s_%s',op.N_reps,op.aa_sel,op.aa_abm,'wor');%or 'wr' for with-replacement
     folder = fullfile('.','out','simulations',op.field,op.metric,subfolder);
     N_N_AA = numel(op.N_AA);       % Number of different AA counts to test
     N_bins = numel(op.metric_edges)-1;    % Number of bins for probability distributions
@@ -136,7 +136,7 @@ function simulate(op)
                 case 'overall_freq'
                     % Randomly choose N_AA_i amino acids from N_available_AA
                     % weighted by overall dataset occurrence frequency
-                    AA_r = randsample(N_available_AA,N_AA_i,true,Pf.Frequency);
+                    AA_r = datasample(1:N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency);
             end
             
             % Get the values of the target field for the selected amino acids
@@ -149,7 +149,7 @@ function simulate(op)
                     % minimum to maximum abundances observed in the database
                     ABD_max = Pf.Max_abiotic(AA_r);
                     ABD_min = Pf.Min_abiotic(AA_r);
-                    ABD_r = (ABD_max-ABD_min).*rand(N_AA_i,1)+ABD_min;
+                    ABD_r = (ABD_max-ABD_min).*rand(size(ABD_max))+ABD_min;
                 case 'expand'
                     % Abundances should be uniform over the range from scaled 
                     % minimum to maximum abundances observed in the database.
@@ -157,7 +157,7 @@ function simulate(op)
                     ABD_max = Pf.Max_abiotic(AA_r)*op.aa_exp;
                     % Min is scaled down by a factor of aa_exp
                     ABD_min = Pf.Min_abiotic(AA_r)*1/op.aa_exp;
-                    ABD_r = (ABD_max-ABD_min).*rand(N_AA_i,1)+ABD_min;
+                    ABD_r = (ABD_max-ABD_min).*rand(size(ABD_max))+ABD_min;
             end
     
             % Compute the feature based on the specified metric
@@ -210,6 +210,12 @@ function simulate(op)
     
     % Determine number of amino acids from which we can sample
     N_available_AA = height(Pf);
+
+    if max(op.N_AA) > N_available_AA
+    error('simulations:poolExceeded', ...
+        'Requested N_AA (%d) exceeds available abiotic pool size (%d) for selection scheme ''%s''.', ...
+        max(op.N_AA), N_available_AA, op.aa_sel);
+    end
     
     % perform computation for each # of AAs
     for i_AA=1:N_N_AA
@@ -238,7 +244,7 @@ function simulate(op)
                 case 'overall_freq'
                     % Randomly choose N_AA_i amino acids from N_available_AA
                     % weighted by overall dataset occurrence frequency
-                    AA_r = randsample(N_available_AA,N_AA_i,true,Pf.Frequency);
+                    AA_r = datasample(1:N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency);
             end
             
             % Get the values of the target field for the selected amino acids
@@ -251,7 +257,7 @@ function simulate(op)
                     % minimum to maximum abundances observed in the database
                     ABD_max = Pf.Max_biotic(AA_r);
                     ABD_min = Pf.Min_biotic(AA_r);
-                    ABD_r = (ABD_max-ABD_min).*rand(N_AA_i,1)+ABD_min;
+                    ABD_r = (ABD_max-ABD_min).*rand(size(ABD_max))+ABD_min;
                 case 'expand'
                     % Abundances should be uniform over the range from scaled 
                     % minimum to maximum abundances observed in the database.
@@ -259,7 +265,7 @@ function simulate(op)
                     ABD_max = Pf.Max_biotic(AA_r)*op.aa_exp;
                     % Min is scaled down by a factor of aa_exp
                     ABD_min = Pf.Min_biotic(AA_r)*1/op.aa_exp;
-                    ABD_r = (ABD_max-ABD_min).*rand(N_AA_i,1)+ABD_min;
+                    ABD_r = (ABD_max-ABD_min).*rand(size(ABD_max))+ABD_min;
             end
     
             % Compute the feature based on the specified metric
