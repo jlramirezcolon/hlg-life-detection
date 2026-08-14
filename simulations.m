@@ -64,7 +64,7 @@ s = readsettings(fn_settings,'wmean'); simulate(s);
 s = readsettings(fn_settings,'gini'); simulate(s);
 
 %% Simulate 
-RAND simulate(op)
+function simulate(op)
 
     % Tell user
     fprintf('Running simulation with the following settings:\n');
@@ -132,7 +132,7 @@ RAND simulate(op)
                 case 'class_freq'
                     % Randomly choose N_AA_i amino acids from N_available_AA
                     % weighted by occurrence frequency in ABIOTIC category
-                    AA_r = datasample(N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency_Abiotic);
+                    AA_r = datasample(1:N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency_Abiotic);
                 case 'overall_freq'
                     % Randomly choose N_AA_i amino acids from N_available_AA
                     % weighted by overall dataset occurrence frequency
@@ -154,9 +154,9 @@ RAND simulate(op)
                     % Abundances should be uniform over the range from scaled 
                     % minimum to maximum abundances observed in the database.
                     % Max is scaled up by a factor of aa_exp
-                    ABD_max = Pf.Max_abiotic(AA_r)*aa_exp;
+                    ABD_max = Pf.Max_abiotic(AA_r)*op.aa_exp;
                     % Min is scaled down by a factor of aa_exp
-                    ABD_min = Pf.Min_abiotic(AA_r)*1/aa_exp;
+                    ABD_min = Pf.Min_abiotic(AA_r)*1/op.aa_exp;
                     ABD_r = (ABD_max-ABD_min).*rand(N_AA_i,1)+ABD_min;
             end
     
@@ -234,7 +234,7 @@ RAND simulate(op)
                 case 'class_freq'
                     % Randomly choose N_AA_i amino acids from N_available_AA
                     % weighted by occurrence frequency in BIOTIC category
-                    AA_r = datasample(N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency_Biotic);
+                    AA_r = datasample(1:N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency_Biotic);
                 case 'overall_freq'
                     % Randomly choose N_AA_i amino acids from N_available_AA
                     % weighted by overall dataset occurrence frequency
