@@ -53,7 +53,7 @@ yscalelog = false;          % Change y-scale to log
 
 % Sources for plots
 base_dir = fullfile('.', 'out', 'simulations', 'HLG_MNDO_pH_7_eV');
-suffix_dir = fullfile('1000000_class_freq_uniform', 'sim.mat');
+suffix_dir = fullfile('1000000_class_freq_uniform_wor', 'sim.mat');
 
 % Construct the cell array
 files = {fullfile(base_dir, 'gini', suffix_dir), ...
