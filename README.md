@@ -95,7 +95,16 @@ simulations_plots.m:
 - `PlotFeatures2d.m`: Creates 2d visualization of two features
 - `LookupProperties.m`: Retrieves property values for molecules in data table
 
-# License
-This software is distributed under the GNU Affero General Public License v3 (AGPLv3). This algorithm is a product of the Planetary eXploration Lab (PXL) at Georgia Tech. We are committed to Open Science and have released this implementation under AGPLv3 to ensure the life-detection community benefits from transparent, peer-reviewed methods.
+## Licensing
+
+This repository is dual-licensed by content type.
+
+- **Code** (`*.m`, `code/`): GNU Affero General Public License v3.0 only —
+  see [`LICENSE.md`](LICENSE.md). Third-party components retain their own
+  terms: `code/3rdparty/gini/` is BSD-2-Clause (© 2010 Yvan Lengwiler).
+- **Data** (`data/`, `settings/`): Creative Commons Attribution 4.0
+  International (CC BY 4.0) — see [`LICENSE-DATA.md`](LICENSE-DATA.md).
+
+This algorithm is a product of the Planetary eXploration Lab (PXL) at Georgia Tech. We are committed to Open Science and have released this implementation under AGPLv3 to ensure the life-detection community benefits from transparent, peer-reviewed methods.
 
 Interested in Collaboration? If you are interested in integrating this algorithm into flight hardware, proprietary software suites, or NASA mission proposals where AGPLv3 compliance may be complex, please reach out. We would love to discuss science team partnerships, validation support, or alternative licensing. Visit [pxl.earth](https://www.pxl.earth/).
