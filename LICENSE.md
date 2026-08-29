@@ -1,3 +1,11 @@
+> **Scope.** This license applies to the **code** in this repository
+> (`*.m`, `code/`). The datasets in `data/` and `settings/` are licensed
+> separately under CC BY 4.0 — see `LICENSE-DATA.md`. Third-party
+> components retain their own terms: `code/3rdparty/gini/` is
+> BSD-2-Clause (© 2010 Yvan Lengwiler).
+
+---
+ 
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
