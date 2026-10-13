@@ -12,7 +12,7 @@ Tested with MATLAB R2024b on OS X 13.6.5 and 14.8.3. Requires the Statistics and
 ## Get Scripts
 ```bash
 # Clone the repository
-git clone https://github.com/jlramirezcolon/hlg-master.git
+git clone https://github.com/jlramirezcolon/hlg-master
 cd hlg-master
 ```
 
