@@ -1,2 +1,9 @@
 **/.DS_Store
-out/
+# LUMOS simulation outputs (about 500 MB per file); regenerate with simulations.m
+out/simulations/
+# fonts extracted locally by figure_code/hnfont.py (not redistributable)
+figure_code/*.ttf
+# large intermediate files from the figure scripts
+figure_code/fig1b_data/*.cube
+*.overlay.pdf
+*.svg.tmp

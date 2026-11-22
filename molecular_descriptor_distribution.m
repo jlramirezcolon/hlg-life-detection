@@ -55,7 +55,7 @@
 clear all; close all; clc;
 
 % Define database excel file
-db=fullfile('.','data','Amino.Acid.Database.Release.2026-07-20.xlsx');
+db=fullfile('.','data','Amino.Acid.Database.Release.2026-11-21.xlsx');
 
 % Define output directory for figures and create it if needed
 out=fullfile('.','out','figures');
@@ -157,7 +157,7 @@ nan_count = sum(isnan(properties_matrix(:)));
 
 % Define the three classes
 biotic_categories = {'Terrestrial biome', 'Organism', 'Hydrothermal'};
-abiotic_sim_categories = {'Europa', 'Noachian Mars', 'Titan', 'Hadean Earth', 'Interstellar Clouds'};
+abiotic_sim_categories = {'Europa', 'Noachian Mars', 'Titan', 'Hadean Earth', 'Asteroid Parent Body'};
 abiotic_categories = {'Lunar', 'Asteroid', 'Meteorite'};
 
 % Define custom colors for each plot 
@@ -172,7 +172,7 @@ color_map('Europa') = [0.0, 0.3, 0.7];              % Dark blue
 color_map('Noachian Mars') = [0.1, 0.4, 0.8];       % Steel blue
 color_map('Titan') = [0.2, 0.5, 0.9];               % Medium blue
 color_map('Hadean Earth') = [0.3, 0.6, 1.0];        % Sky blue
-color_map('Interstellar Clouds') = [0.4, 0.7, 1.0]; % Maya blue
+color_map('Asteroid Parent Body') = [0.4, 0.7, 1.0]; % Maya blue
 
 % Abiotic class plot: Orange gradient
 color_map('Lunar') = [0.8, 0.4, 0.0];               % Dark orange
@@ -197,15 +197,19 @@ end
 property_values = properties_data.properties_matrix(property_idx, :);
 
 % Define desired category order
-desired_order = categorical({'Interstellar Clouds', 'Meteorite', ...
+desired_order = categorical({'Asteroid Parent Body', 'Meteorite', ...
     'Asteroid', 'Hadean Earth', 'Noachian Mars', 'Lunar', 'Titan', ...
     'Europa', 'Hydrothermal', 'Terrestrial biome', 'Organism'});
 
 % Initialize data storage for property values by category
 y_data_ordered = cell(length(desired_order), 1);
+y_name_ordered = cell(length(desired_order), 1);   % AA of each value, for counting each AA once
 for i = 1:length(desired_order)
     y_data_ordered{i} = [];
+    y_name_ordered{i} = {};
 end
+% one key per AA; D-, L- and DL- forms of the same AA share a key (identical HLG)
+aa_key = regexprep(cellfun(@char, amino_acid_names, 'UniformOutput', false), '^(DL|D|L)-', '');
 
 % Find environments with detected amino acids
 has_detected = false(size(id));
@@ -225,6 +229,7 @@ for i = 1:size(detection_matrix, 1)
             if any(detected)
                 values = property_values(detected);
                 y_data_ordered{cat_idx} = [y_data_ordered{cat_idx}, values];
+                y_name_ordered{cat_idx} = [y_name_ordered{cat_idx}, aa_key(detected)];
             end
         end
     end
@@ -370,7 +375,9 @@ biotic_idx = find(P.Biotic == 1);                      % Biotic
 combined_abiotic_idx = unique([abiotic_d_idx; abiotic_s_idx]); % Abiotic + Abiotic (Simulated)
 
 % Variables to analyze
+include_S1 = false;   % true adds the TDDFT optical gap (S1) as an 11th descriptor
 variables = {'HLG_wB97XD_TZVP_pH_7_eV', 'Molar_mass', 'MA_index', 'Carbon_number', 'Heat_Formation_kJ_mol', 'Gibbs_Energy_kJ_mol', 'LogP','LogS','TopoPSA_A2','Dipole_moment_Debye'};
+if include_S1, variables = [variables(1), {'S1_TDDFT_eV'}, variables(2:end)]; end
 class = {'Abiotic_D', 'Abiotic_S', 'Biotic', 'Combined_Abiotic'};
 indices = {abiotic_d_idx, abiotic_s_idx, biotic_idx, combined_abiotic_idx};
 
@@ -454,7 +461,7 @@ sorted_variables_labels = strrep(sorted_variables,"_"," ")
 h = barh(sorted_values);
 set(h, 'FaceColor', [244/255, 194/255, 69/255]);
 yticks(1:length(variables))
-xlim([1e-3 2.3])
+xlim([1e-3 3])  % S1 is 2.70 bits
 yticklabels(sorted_variables_labels)
 xlabel("Relative entropy (bits)")
 ylabel("Molecular descriptor")
@@ -472,13 +479,13 @@ figure('Position', [100, 100, 450, 450]);
 
 % Define mapping from full names to abbreviations
 name_abbr_map = containers.Map({'Hydrothermal', 'Organism', 'Terrestrial biome', ...
-                               'Interstellar Clouds', 'Hadean Earth', 'Titan', ...
+                               'Asteroid Parent Body', 'Hadean Earth', 'Titan', ...
                                'Noachian Mars', 'Europa', 'Meteorite', 'Asteroid', 'Lunar'}, ...
-                               {'Hy', 'O', 'Tb', 'I', 'H', 'T', 'N', 'E', 'M', 'A', 'L'});
+                               {'Hy', 'O', 'Tb', 'P', 'H', 'T', 'N', 'E', 'M', 'A', 'L'});
 
 % Define custom category order (based on user request)
 custom_order_names = {'Hydrothermal', 'Organism', 'Terrestrial biome', ...
-                               'Interstellar Clouds', 'Hadean Earth', 'Titan', ...
+                               'Asteroid Parent Body', 'Hadean Earth', 'Titan', ...
                                'Noachian Mars', 'Europa', 'Meteorite', 'Asteroid', 'Lunar'};
 
 % Find indices of existing categories that match the custom order
@@ -510,7 +517,11 @@ for i = 1:num_valid
         if i ~= j
             idx_i = custom_order_indices(i);
             idx_j = custom_order_indices(j);
-            [p_values(i,j), ~] = ranksum(y_data_ordered{idx_i}, y_data_ordered{idx_j});
+            % each AA counted once per subcategory (by AA name), so AAs reported in many samples are
+            % not treated as independent observations. Fig. 1e is no longer in the paper; the matrix is kept here.
+            [~, ui] = unique(y_name_ordered{idx_i}, 'stable');
+            [~, uj] = unique(y_name_ordered{idx_j}, 'stable');
+            [p_values(i,j), ~] = ranksum(y_data_ordered{idx_i}(ui), y_data_ordered{idx_j}(uj));
         end
     end
 end
@@ -586,7 +597,7 @@ for v = 1:length(variables)
     abiotic_vals = stats.(var_name).Combined_Abiotic.values;
     all_vals = [biotic_vals; abiotic_vals];
     
-    subplot(2, 5, v);
+    subplot(3, 4, v);  % up to 11 descriptors
     hold on;
     
     bin_edges = linspace(min(all_vals), max(all_vals), fixed_num_bins + 1);

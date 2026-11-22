@@ -55,8 +55,16 @@ clear all; close all; clc;
 addpath('./code');
 addpath('./code/3rdparty/gini');
 
-% Settings
-fn_settings = fullfile('.','settings','sim_settings_2026-08-11.xlsx');
+% Settings: choose the descriptor to simulate
+%   'HLG': HOMO-LUMO gap, wB97X-D3/def2-TZVP Boltzmann ensemble (settings/sim_settings_HLG.xlsx)
+%   'S1' : TDDFT optical gap, wB97X/def2-TZVPD/CPCM (settings/sim_settings_S1.xlsx, with S1 bin edges)
+% Each run takes about 30 minutes per metric and writes out/simulations/<database field>/<metric>/.
+descriptor = 'HLG';
+if strcmp(descriptor, 'S1')
+    fn_settings = fullfile('.','settings','sim_settings_S1.xlsx');
+else
+    fn_settings = fullfile('.','settings','sim_settings_HLG.xlsx');
+end
 
 % Run simulations
 s = readsettings(fn_settings,'wvar'); simulate(s);
@@ -80,9 +88,27 @@ function simulate(op)
     % frequency information calculated and added.
     P = GetPropertiesTable(op.dataset);
 
-    %% Derived values 
+    % Sampling pools: amino acids represented in each category
+    PfA = P(P.Abiotic & P.Occurrence_Abiotic>0,:);
+    PfB = P(P.Biotic & P.Occurrence_Biotic>0,:);
 
-    subfolder = sprintf('%d_%s_%s_%s',op.N_reps,op.aa_sel,op.aa_abm,'wor');%or 'wr' for with-replacement
+    % An amino acid's unresolved ('Both') entry and its D-/L- entries are
+    % mutually exclusive within a simulated sample. Determine the largest
+    % number of amino acids that can always be drawn under this rule and
+    % require all requested counts to be within it for both categories.
+    N_max_A = MaxGuaranteedCount(PfA);
+    N_max_B = MaxGuaranteedCount(PfB);
+    fprintf('Maximum N_AA supported by the pools: abiotic %d, biotic %d\n', N_max_A, N_max_B);
+    if max(op.N_AA) > min(N_max_A, N_max_B)
+        error('simulations:poolExceeded', ...
+        'Requested N_AA (%d) exceeds the number of amino acids that can always be drawn (abiotic %d, biotic %d).', ...
+        max(op.N_AA), N_max_A, N_max_B);
+    end
+
+    %% Derived values
+
+    % 'wor_excl': without replacement, 'Both' and D-/L- entries mutually exclusive
+    subfolder = sprintf('%d_%s_%s_%s',op.N_reps,op.aa_sel,op.aa_abm,'wor_excl');
     folder = fullfile('.','out','simulations',op.field,op.metric,subfolder);
     N_N_AA = numel(op.N_AA);       % Number of different AA counts to test
     N_bins = numel(op.metric_edges)-1;    % Number of bins for probability distributions
@@ -100,20 +126,13 @@ function simulate(op)
     sim.P_of_E_given_A.pdf = NaN([N_N_AA N_bins]);          % Density
     sim.P_of_E_given_A.cdf = NaN([N_N_AA N_bins]);          % Cumulative distribution
     
-    % Limit the amino acids considered to those that are ABIOTIC (A)
-    Pf = P(P.Abiotic,:);
-        
-    % Limit the amino acids to those represented in ABIOTIC category
-    Pf = Pf(Pf.Occurrence_Abiotic>0,:);
-    
-    % Determine number of amino acids from which we can sample
-    N_available_AA = height(Pf);
-    
-    if max(op.N_AA) > N_available_AA
-        error('simulations:poolExceeded', ...
-        'Requested N_AA (%d) exceeds available abiotic pool size (%d) for selection scheme ''%s''.', ...
-        max(op.N_AA), N_available_AA, op.aa_sel);
-    end
+    % Amino acids represented in the ABIOTIC (A) category
+    Pf = PfA;
+
+    % Selection weights, amino acid groups, and unresolved ('Both') entries
+    w = SelectionWeights(Pf, op.aa_sel, 'Frequency_Abiotic');
+    [~,~,grp] = unique(Pf.Group);
+    isBoth = strcmp(Pf.Chirality,'Both');
 
     % perform computation for each # of AAs
     for i_AA=1:N_N_AA
@@ -130,28 +149,19 @@ function simulate(op)
             AA_r = NaN(N_AA_i,1);
             ABD_r = NaN(N_AA_i,1);
             feature_r = NaN;
-            % Select which amino acids to include in this computation
-            switch op.aa_sel
-                case 'uniform'
-                    % Randomly choose N_AA_i amino acids from N_available_AA
-                    AA_r = randsample(N_available_AA,N_AA_i);
-                case 'class_freq'
-                    % Randomly choose N_AA_i amino acids from N_available_AA
-                    % weighted by occurrence frequency in ABIOTIC category
-                    AA_r = datasample(1:N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency_Abiotic);
-                case 'overall_freq'
-                    % Randomly choose N_AA_i amino acids from N_available_AA
-                    % weighted by overall dataset occurrence frequency
-                    AA_r = datasample(1:N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency);
-            end
-            
+            % Select which amino acids to include in this computation:
+            % randomly choose N_AA_i amino acids, weighted according to
+            % op.aa_sel, without repeating an amino acid as both its
+            % unresolved ('Both') and its D-/L- entries
+            AA_r = sampleWithoutConflicts(w, grp, isBoth, N_AA_i);
+
             % Get the values of the target field for the selected amino acids
             val_r = Pf{AA_r,op.field};
-            
+
             % Assign the abundance (ABD_r) for the selected amino acids (AA_r)
             switch op.aa_abm
                 case 'uniform'
-                    % Abundances should be uniform over the range from the 
+                    % Abundances should be uniform over the range from the
                     % minimum to maximum abundances observed in the database
                     ABD_max = Pf.Max_abiotic(AA_r);
                     ABD_min = Pf.Min_abiotic(AA_r);
@@ -208,14 +218,13 @@ function simulate(op)
     sim.P_of_E_given_B.pdf = NaN([N_N_AA N_bins]);     % Density
     sim.P_of_E_given_B.cdf = NaN([N_N_AA N_bins]);     % Cumulative distribution
     
-    % Limit the amino acids considered to those that are BIOTIC (B)
-    Pf = P(P.Biotic,:);
-    
-    % Limit the amino acids to those represented in BIOTIC category
-    Pf = Pf(Pf.Occurrence_Biotic>0,:);
-    
-    % Determine number of amino acids from which we can sample
-    N_available_AA = height(Pf);
+    % Amino acids represented in the BIOTIC (B) category
+    Pf = PfB;
+
+    % Selection weights, amino acid groups, and unresolved ('Both') entries
+    w = SelectionWeights(Pf, op.aa_sel, 'Frequency_Biotic');
+    [~,~,grp] = unique(Pf.Group);
+    isBoth = strcmp(Pf.Chirality,'Both');
     
     % perform computation for each # of AAs
     for i_AA=1:N_N_AA
@@ -232,20 +241,11 @@ function simulate(op)
             AA_r = NaN(N_AA_i,1);
             ABD_r = NaN(N_AA_i,1);
             feature_r = NaN;
-            % Select which amino acids to include in this computation
-            switch op.aa_sel
-                case 'uniform'
-                    % Randomly choose N_AA_i amino acids from N_available_AA
-                    AA_r = randsample(N_available_AA,N_AA_i);
-                case 'class_freq'
-                    % Randomly choose N_AA_i amino acids from N_available_AA
-                    % weighted by occurrence frequency in BIOTIC category
-                    AA_r = datasample(1:N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency_Biotic);
-                case 'overall_freq'
-                    % Randomly choose N_AA_i amino acids from N_available_AA
-                    % weighted by overall dataset occurrence frequency
-                    AA_r = datasample(1:N_available_AA,N_AA_i,'Replace',false,'Weights',Pf.Frequency);
-            end
+            % Select which amino acids to include in this computation:
+            % randomly choose N_AA_i amino acids, weighted according to
+            % op.aa_sel, without repeating an amino acid as both its
+            % unresolved ('Both') and its D-/L- entries
+            AA_r = sampleWithoutConflicts(w, grp, isBoth, N_AA_i);
             
             % Get the values of the target field for the selected amino acids
             val_r = Pf{AA_r,op.field};
@@ -414,9 +414,15 @@ function P = GetPropertiesTable(datafile)
     P.("Frequency_Biotic") = newTabCol;
     P.("Occurrence_Abiotic") = newTabCol;
     P.("Frequency_Abiotic") = newTabCol;
+    % Amino acid group (shared by its D-, L-, and unresolved entries) and
+    % chirality ('D', 'L', 'Both', or 'Achiral')
+    P.("Group") = repmat({''}, height(P), 1);
+    P.("Chirality") = repmat({''}, height(P), 1);
     for i = 1:height(T)
         AA=T.Symbol{i};
         ind = find(strcmp(P.Symbol, AA),1);
+        P.Group{ind} = strtrim(char(T.Amino_Acid(i)));
+        P.Chirality{ind} = strtrim(char(T.Chirality(i)));
         P.Min_abiotic(ind) = T.Min_abiotic(i);
         P.Max_abiotic(ind) = T.Max_abiotic(i);
         P.Min_biotic(ind) = T.Min_biotic(i);
@@ -433,7 +439,7 @@ function P = GetPropertiesTable(datafile)
     %
     % These are D-cysteine, D-asparagine, D-proline, D-ornithine, L-ornithine, 
     % D-pipecolic acid, L-pipecolic acid, D-alloisoleucine, L-alloisoleucine, 
-    % D-5-hydroxylysine, L-5-hydroxylysine, and D-histidine.
+    % D-5-hydroxylysine, L-5-hydroxylysine, D-histidine, and D-tryptophan.
     %
     bRemove = (P.Frequency == 0);
     P(bRemove,:)=[];
@@ -441,6 +447,45 @@ function P = GetPropertiesTable(datafile)
     % Set the "Biotic" and "Abiotic" column data types to logical.
     P.Biotic = logical(P.Biotic);
     P.Abiotic = logical(P.Abiotic);
+end
+
+% SelectionWeights returns the weight of each amino acid in the pool Pf for
+% the selection scheme aa_sel. freqField is the occurrence frequency field
+% of the category being simulated ('Frequency_Abiotic' or 'Frequency_Biotic').
+function w = SelectionWeights(Pf, aa_sel, freqField)
+    switch aa_sel
+        case 'uniform'
+            % Every amino acid is equally likely
+            w = ones(height(Pf),1);
+        case 'class_freq'
+            % Weighted by occurrence frequency in the simulated category
+            w = Pf.(freqField);
+        case 'overall_freq'
+            % Weighted by overall dataset occurrence frequency
+            w = Pf.Frequency;
+        otherwise
+            error('simulations:aaSel','Unknown amino acid selection mechanism ''%s''.',aa_sel);
+    end
+end
+
+% MaxGuaranteedCount returns the largest number of amino acids that can
+% always be drawn from the pool Pf when an amino acid's unresolved ('Both')
+% entry and its D-/L- entries are mutually exclusive, whatever the order of
+% the draws. Drawing the 'Both' entry of an amino acid first leaves only one
+% of its entries available, so such an amino acid is guaranteed to
+% contribute one; any other amino acid contributes all of its entries.
+function N_max = MaxGuaranteedCount(Pf)
+    [~,~,grp] = unique(Pf.Group);
+    isBoth = strcmp(Pf.Chirality,'Both');
+    N_max = 0;
+    for g = 1:max(grp)
+        inGroup = (grp == g);
+        if any(isBoth(inGroup))
+            N_max = N_max + 1;
+        else
+            N_max = N_max + sum(inGroup);
+        end
+    end
 end
 
 function settings = readsettings(xlsx,sheet)

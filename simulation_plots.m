@@ -41,9 +41,20 @@
 
 clear all; close all; clc;
 
+% Choose the descriptor whose simulations (from simulations.m) to plot: 'HLG' or 'S1'
+descriptor = 'HLG';
+
 % Plotting options
 fs = 12;                    % Font size
 out = fullfile('.','out','figures');      % output folder
+if strcmp(descriptor, 'S1')
+    field = 'S1_TDDFT_eV';
+    out = fullfile(out, 'S1');            % S1 figures go to their own folder
+    range_prior = [0 0.03];               % y range of Figs. S6 and 4b (S1 wvar is about 10x smaller)
+else
+    field = 'HLG_wB97XD_TZVP_pH_7_eV';
+    range_prior = [0 0.15];
+end
 
 letter_width = 8.5;         % Figure export width in inches
 letter_height = 11.0;       % Figure export height in inches
@@ -52,8 +63,8 @@ contenttype = 'image';      % Fast but low quality
 yscalelog = false;          % Change y-scale to log
 
 % Sources for plots
-base_dir = fullfile('.', 'out', 'simulations', 'HLG_MNDO_pH_7_eV');
-suffix_dir = fullfile('1000000_class_freq_uniform_wor', 'sim.mat');
+base_dir = fullfile('.', 'out', 'simulations', field);
+suffix_dir = fullfile('1000000_class_freq_uniform_wor_excl', 'sim.mat');
 
 % Construct the cell array
 files = {fullfile(base_dir, 'gini', suffix_dir), ...
@@ -213,8 +224,8 @@ load(fn);
 label = [op.metric_label ' of ' op.field_label];
 
 % override default plot options
-op.metric_range_evidence = [0 0.15];
-op.metric_range_posterior = [0 0.15];
+op.metric_range_evidence = range_prior;
+op.metric_range_posterior = range_prior;
 
 for row=1:3
     
@@ -287,8 +298,8 @@ load(fn);
 label = [op.metric_label ' of ' op.field_label];
 
 % override default plot options
-op.metric_range_evidence = [0 0.15];
-op.metric_range_posterior = [0 0.15];
+op.metric_range_evidence = range_prior;
+op.metric_range_posterior = range_prior;
 
 for row=length(P_of_B)
     

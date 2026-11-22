@@ -1,0 +1,63 @@
+amino_acid,database_names,in_abundance_database,state,n_conformers,hlg_wB97XD3_TZVP_boltzmann_eV,hlg_wB97X3c_boltzmann_eV,s1_conformer,s1_wB97X_TZVPD_eV,s1_oscillator_strength,s1_wB97X3c_eV,dipole_boltzmann_debye
+1-aminocyclopropane-1-carboxylic-acid,1-Aminocyclopropane-1-carboxylic acid,True,zwitterionic,1,12.412610,12.021369,1,6.311572,0.000000,6.392254,13.687296
+2-methylglutamic-acid,2-Me-Glu,False,anionic-form-1,2,11.894328,11.621469,6,6.184495,0.000000,,12.496776
+"3-amino-2,2-dimethylpropanoic-acid","3-amino-2,2-dimethyl propanoic acid",True,zwitterionic,1,11.793687,11.173407,1,6.163950,0.001000,6.261286,15.073423
+3-amino-2-(hydroxy-methyl)propanoic-acid,DL-3-Amino-2-(hydroxy-methyl) propanoic acid,True,zwitterionic-form-1,5,11.928612,11.503318,1,6.166155,0.000000,6.255789,15.034478
+3-amino-3-methylbutyric-acid,3-amino-3-methyl butyric acid,True,zwitterionic,3,11.736352,11.488411,1,6.212713,0.000000,6.310593,15.511003
+3-amino-n-pentanoic-acid,D-3-amino-n-pentanoic acid; L-3-amino-n-pentanoic acid; 3-amino-n-pentanoic acid,True,zwitterionic,6,11.840890,11.447264,5,6.241884,0.000000,6.338212,15.776675
+3-hydroxyaspartic-acid,β-OH-Asp,False,anionic-form-1,5,11.888500,11.530941,1,6.112875,0.000000,,8.242377
+4-amino-2-hydroxybutyric-acid,4-Amino-2-hydroxybutyric acid,True,zwitterionic-form-1,6,12.111068,11.635320,3,6.324443,0.000000,6.422595,15.395778
+4-amino-2-methylbutyric-acid,4-amino-2-methyl butyric acid,True,zwitterionic,3,11.838758,11.463765,3,6.106698,0.000000,6.181202,15.466743
+4-amino-3-hydroxybutyric-acid,D-4-Amino-3-hydroxybutyric acid; L-4-Amino-3-hydroxybutyric acid,True,zwitterionic-form-1,5,11.950487,11.636636,6,5.992301,0.000000,6.033581,14.583830
+4-amino-3-methylbutyric-acid,4-amino-3-methyl butyric acid,True,zwitterionic,7,11.769576,11.362494,1,6.165148,0.000000,6.253666,15.480362
+4-amino-n-pentanoic-acid,D-4-amino-n-pentanoic acid; L-4-amino-n-pentanoic acid; 4-amino-n-pentanoic acid,True,zwitterionic,6,11.810212,11.536821,1,6.165338,0.000000,6.252768,15.955306
+5-amino-n-pentanoic-acid,5-amino-n-pentanoic acid,True,zwitterionic,5,11.748974,11.432497,2,6.085255,0.000000,6.162508,15.408402
+alanine,D-alanine; L-alanine; alanine,True,zwitterionic,1,12.007242,11.652682,1,6.269258,0.000000,6.364907,13.408781
+alloisoleucine,D-alloisoleucine; L-alloisoleucine; alloisoleucine,True,zwitterionic,9,11.963391,11.807005,1,6.271980,0.000000,6.370349,13.246451
+allothreonine,D-allo-threonine; L-allo-threonine,True,zwitterionic-form-1,3,12.118943,11.817796,3,6.290919,0.000000,6.375029,12.678553
+alpha-aminoadipic-acid,D-aminoadipic acid; L-aminoadipic acid,True,anionic-form-1,2,11.805330,11.474314,1,6.202291,0.000000,6.306239,9.642638
+alpha-aminobutyric-acid,D-ɑ-aminobutyric acid; L-ɑ-aminobutyric acid; ɑ-aminobutyric acid,True,zwitterionic,3,11.979417,11.626872,3,6.241938,0.000000,6.338185,13.338087
+alpha-aminoisobutyric-acid,ɑ-aminoisobutyric acid,True,zwitterionic,1,12.055950,11.808222,1,6.278102,0.000000,6.367328,13.270386
+aminocaproic-acid,ε-aminocaproic acid,True,zwitterionic,8,11.648245,11.137662,5,6.196958,0.000000,6.301368,17.483427
+arginine,D-arginine; L-arginine; arginine,True,cationic,13,12.249060,11.966390,1,6.307572,0.000000,6.407275,12.793077
+asparagine,D-asparagine; L-asparagine; asparagine,True,zwitterionic-form-1,3,11.654453,11.639396,1,5.994532,0.001000,6.098507,11.025111
+aspartic-acid,D-aspartic acid; L-aspartic acid; aspartic acid,True,anionic-form-1,2,11.861288,11.630638,2,6.281422,0.000000,6.386131,14.268844
+beta-(aminomethyl)-succinic-acid,D-β-(Aminomethyl)-succinic acid; L-β-(Aminomethyl)-succinic acid,True,anionic-form-1,2,11.842059,11.356904,1,6.203951,0.000000,6.304007,15.417840
+beta-alanine,β-alanine,True,zwitterionic,1,11.909689,11.513958,1,6.220686,0.000000,6.316797,15.669999
+beta-aminobutyric-acid,D-β-aminobutyric acid; L-β-aminobutyric acid; β-aminobutyric acid,True,zwitterionic,2,11.813388,11.444576,1,6.242564,0.000000,6.338784,15.670522
+beta-aminoisobutyric-acid,D-β-aminoisobutyric acid; L-β-aminoisobutyric acid; β-aminoisobutyric acid,True,zwitterionic,2,11.868046,11.580439,1,6.169638,0.000000,6.260660,15.206704
+beta-homoserine,β-homoserine,True,zwitterionic-form-1,3,11.921038,11.606786,5,6.217230,0.000000,6.308960,15.224695
+beta-isothreonine,isothreonine,True,zwitterionic-form-1,2,12.045039,11.604291,1,6.383846,0.000000,6.504066,13.636177
+cysteine,D-cysteine; L-cysteine; cysteine,True,zwitterionic-form-1,2,11.626671,11.598919,1,5.919511,0.002000,6.006097,14.418323
+gamma-aminobutyric-acid,ɣ-aminobutyric acid,True,zwitterionic,2,11.830316,11.473167,2,6.186264,0.000000,6.277313,16.210151
+glutamic-acid,D-glutamic acid; L-glutamic acid; glutamic acid,True,anionic-form-1,3,11.768119,11.407073,1,6.176304,0.000000,6.269068,10.049637
+glutamine,D-glutamine; L-glutamine; glutamine,True,zwitterionic-form-1,4,11.667731,11.606264,1,6.170672,0.000000,6.264469,12.297996
+glycine,Glycine,True,zwitterionic,1,12.275628,12.017967,1,6.368117,0.000000,6.465561,13.456327
+histidine,D-histidine; L-histidine; histidine,True,zwitterionic-form-1,1,11.174601,10.793863,3,6.316851,0.000000,6.416173,11.698753
+homocysteic-acid,homocysteic acid,False,anionic-form-1,3,12.170862,11.815720,1,6.321396,0.000000,,9.390915
+homoserine,D-homoserine; L-homoserine,True,zwitterionic-form-1,3,12.064756,11.790614,3,6.219652,0.000000,6.315681,12.500795
+hydroxylysine,D-5-hydroxylysine; L-5-hydroxylysine; 5-hydroxylysine,True,cationic-form-1,3,12.251077,11.988192,5,6.334865,0.000000,6.427057,16.736056
+isoleucine,D-isoleucine; L-isoleucine; isoleucine,True,zwitterionic,6,11.963486,11.630733,11,6.239843,0.000000,6.337831,13.238641
+isoserine,isoserine,False,zwitterionic-form-1,2,12.180302,11.863641,2,6.415792,0.000000,,13.825283
+isovaline,D-isovaline; L-isovaline; isovaline,True,zwitterionic,3,12.031205,11.809984,2,6.278157,0.000000,6.361532,13.260732
+leucine,D-leucine; L-leucine; leucine,True,zwitterionic,8,11.959409,11.714110,10,6.210564,0.000000,6.308525,13.273946
+lysine,D-lysine; L-lysine; lysine,True,cationic-form-1,6,12.328659,11.865804,10,6.226101,0.000000,6.304878,10.200052
+methionine,D-methionine; L-methionine; methionine,True,zwitterionic,3,11.603431,11.092487,15,5.807753,0.000000,5.903102,14.214225
+methionine-sulfone,met sulfone,False,zwitterionic-form-1,9,11.963082,11.687180,10,6.196250,0.000000,,16.045854
+methionine-sulfoxide,met sulfoxide,False,zwitterionic-form-1,6,11.878144,11.638788,6,6.163325,0.007000,,11.892284
+methylserine,methylserine,True,zwitterionic-form-1,2,12.070899,11.792108,1,6.239217,0.000000,6.317314,12.487159
+norvaline,D-norvaline; L-norvaline; norvaline,True,zwitterionic,10,12.033580,11.585100,3,6.250020,0.000000,6.345641,13.325406
+ornithine,D-ornithine; L-ornithine; ornithine,True,cationic-form-1,5,12.383025,12.015919,3,6.353695,0.000000,6.451412,12.738014
+phenylalanine,D-phenylalanine; L-phenylalanine; phenylalanine,True,zwitterionic,2,10.650104,10.996728,2,5.492782,0.001000,5.511721,13.268555
+pipecolic-acid,D-pipecolic acid; L-pipecolic acid; pipecolic acid,True,zwitterionic,3,12.075136,11.852276,1,6.323736,0.000000,6.415302,14.427220
+proline,D-proline; L-proline; proline,True,zwitterionic,2,12.066132,11.784701,2,6.271490,0.000000,6.361478,13.766047
+s-methylcysteine,S-methylcys,False,zwitterionic,2,11.742681,11.400637,3,5.903592,0.000000,,11.564847
+sarcosine,Sarcosine,True,zwitterionic,2,12.250235,12.083220,2,6.340933,0.000000,6.440826,13.816424
+serine,D-serine; L-serine; serine,True,zwitterionic-form-1,2,12.245427,11.859796,1,6.295028,0.000000,6.377369,12.675208
+taurine,Taurine,True,zwitterionic,2,12.323766,11.826859,1,7.407320,0.000000,8.157511,17.740643
+threonine,D-threonine; L-threonine; threonine,True,zwitterionic-form-1,3,12.100414,11.904717,1,6.143188,0.000000,6.223815,12.065043
+trans-4-hydroxy-L-proline,trans-4-Hydroxy-L-proline,True,zwitterionic-form-1,2,12.033963,11.816317,1,6.325096,0.000000,6.420880,12.816591
+trans-5-hydroxy-L-pipecolic-acid,trans-5-Hydroxy-L-pipecolic acid,True,zwitterionic-form-1,2,11.917849,11.705538,3,6.144113,0.000000,6.241013,13.206082
+tryptophan,D-tryptophan; L-tryptophan; tryptophan,True,zwitterionic-form-1,4,9.292758,9.603815,4,5.077754,0.056000,5.087441,14.752943
+tyrosine,D-tyrosine; L-tyrosine; tyrosine,True,zwitterionic-form-1,3,9.962578,10.317054,3,5.164857,0.027000,5.206110,12.480205
+valine,D-valine; L-valine; valine,True,zwitterionic,3,11.891627,11.713550,2,6.243435,0.000000,6.342185,13.236468

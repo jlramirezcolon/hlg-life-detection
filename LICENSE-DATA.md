@@ -5,9 +5,11 @@ Attribution 4.0 International License (CC BY 4.0).
 
 This covers:
 
-- `data/` — including `Amino.Acid.Database.Release.2026-07-20.xlsx`
-  and the `XYZ files/` optimized geometries
-- `settings/` — including `sim_settings_2026-08-11.xlsx`
+- `data/` — `Amino.Acid.Database.Release.2026-11-21.xlsx`
+- `settings/` — the LUMOS simulation settings
+- `quantum_chemistry/` — conformer geometries and computed orbital and
+  excitation energies
+- `out/` and `out_with_S1/` — analysis results
 
 Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
 Human-readable summary: https://creativecommons.org/licenses/by/4.0/

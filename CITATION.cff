@@ -12,8 +12,8 @@ authors:
     given-names: "C. E."
     affiliation: "Planetary eXploration Lab (PXL), Georgia Institute of Technology"
 title: "hlg-life-detection: Distinguishing life from non-life via molecular frontier orbital energy gaps"
-version: "v0.3.1"
-date-released: 2026-08-29
+version: "v0.4.0"
+date-released: 2026-11-21
 url: "https://github.com/jlramirezcolon/hlg-life-detection"
 license: AGPL-3.0-only
 preferred-citation:
@@ -26,5 +26,4 @@ preferred-citation:
     - family-names: "Carr"
       given-names: "C. E."
   title: "Distinguishing life from non-life via molecular frontier orbital energy gaps"
-  journal: "Communications Chemistry"
   year: 2026

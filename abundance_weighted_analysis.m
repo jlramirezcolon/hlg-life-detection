@@ -69,7 +69,7 @@ if ~exist(out,'dir'), mkdir(out); end
 %% Subsection 1b. Read in Amino Acid Abundance Data
 
 % Add file path
-datafile = fullfile('.','data','Amino.Acid.Database.Release.2026-07-20.xlsx');
+datafile = fullfile('.','data','Amino.Acid.Database.Release.2026-11-21.xlsx');
 % Set up import options for our data file; ignore first 3 lines
 opts = detectImportOptions(datafile,'Sheet','MATLAB','NumHeaderLines',2);
 % Force input of column 7 (Pub_chem_ID) using char type
@@ -96,6 +96,13 @@ Samples = string(T.Properties.VariableNames(Start_Col:end))';
 % Read in properties
 P = readtable(datafile,'Sheet','Properties');
 P = removevars(P,{'Biotic','Abiotic'});
+% The paper's main analysis uses the HLG only (10 descriptors, 30 features). Set include_S1 = true to
+% also analyse the TDDFT optical gap (S1_TDDFT_eV, 11 descriptors, 33 features), as in out_with_S1/.
+include_S1 = false;
+% Classifier predictors (Suppl. Table S5): 'HLG' = HLG wvar only; 'S1' = S1 wvar only (needs include_S1 = true);
+% 'all' = every feature (with include_S1 = false, the 30 HLG-based features).
+ml_predictors = 'HLG';
+if ~include_S1, P = removevars(P, {'S1_TDDFT_eV'}); end
 
 %% Section 2. Make Feature Table with weighted statistical metrics
 
@@ -266,10 +273,10 @@ set(gcf, 'Renderer', 'painters');
 fn = fullfile(out,'Fig3a.pdf');
 exportgraphics(gcf, fn, 'ContentType', 'vector');
 
-%% Figure 3b. Two-dimensional scatter plot of weighted variance for HLG (MNDO method) versus MAI
+%% Figure 3b. Two-dimensional scatter plot of weighted variance for HLG (wB97X-D3/def2-TZVP) versus MAI
 
 % Yields a 2D scatter plot of any two distributions of results from table F
-f1 = 'HLG_MNDO_pH_7_eV_wvar'; % 1st molecular descriptor for a specific metric
+f1 = 'HLG_wB97XD_TZVP_pH_7_eV_wvar'; % 1st molecular descriptor for a specific metric
 f2 = 'MA_index_wvar';        % 2nd molecular descriptor for a specific metric
 PlotFeatures2d(F,f1,f2);
 
@@ -817,8 +824,11 @@ exportgraphics(gcf, fn, 'ContentType', 'vector');
 
 % Define predictors and response
 labels = F.Class;
-%selectedPredictors = 5:width(F); % All predictors
-selectedPredictors = {'HLG_MNDO_pH_7_eV_wvar'}; 
+switch ml_predictors
+    case 'all', selectedPredictors = 5:width(F);
+    case 'S1',  selectedPredictors = {'S1_TDDFT_eV_wvar'};
+    otherwise,  selectedPredictors = {'HLG_wB97XD_TZVP_pH_7_eV_wvar'};
+end
 features = F{:, selectedPredictors};
 
 % Define models
